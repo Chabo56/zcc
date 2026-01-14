@@ -75,7 +75,7 @@ return [
             ['title' => 'Users & Roles', 'url' => '/system/users'],
             ['title' => 'Permissions', 'url' => '/system/permissions'],
             ['title' => 'Audit Log', 'url' => '/system/audit'],
-            ['title' => 'Modules', 'url' => '/system/modules'],
+            ['title' => 'Modules', 'url' => '/modules.php'],
             ['title' => 'Core Updates', 'url' => '/system/updates'],
             ['title' => 'Settings', 'url' => '/system/settings'],
         ],

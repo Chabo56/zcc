@@ -28,9 +28,15 @@ Standard-Login (nur für den Start gedacht):
 ### Hinweise zum Modul-System
 - Modul-Routing läuft über `m.php?m=<key>`.
 - Aktivierte Module werden aus `storage/modules.json` geladen.
+- Modul-Verwaltung erfolgt über `/modules.php` (Upload, Aktivieren/Deaktivieren).
 
-#### Module installieren (MVP)
-Aktuell gibt es **keinen** `/modules.php`-Upload. Für den MVP-Start geht es manuell:
+#### Module installieren (ZIP-Upload)
+1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
+2. Optional „Modul direkt aktivieren“ auswählen.
+3. Modul ist über `/m.php?m=<key>` erreichbar.
+
+#### Module manuell (Fallback)
+Wenn kein ZIP verfügbar ist:
 1. Modul-Ordner unter `modules/<key>/` ablegen (mit `index.php` im Root).
 2. `storage/modules.json` um das Modul ergänzen und auf `enabled: true` setzen.
 
@@ -44,24 +50,6 @@ Beispiel `storage/modules.json`:
     "enabled": true
   }
 ]
-```
-
-Minimaler Modul-Ordner:
-```
-modules/
-  demo-module/
-    index.php
-```
-
-Beispiel `modules/demo-module/index.php`:
-```php
-<?php
-echo "Hallo aus dem Demo-Modul!";
-```
-
-Aufruf im Browser:
-```
-/m.php?m=demo-module
 ```
 
 
