@@ -2,7 +2,7 @@
   "key": "automation-center",
   "name": "Automation Center",
   "version": "0.1.0",
-  "description": "n8n-first automation registry shell.",
+  "description": "n8n-first automation registry and callback shell.",
   "permissions": ["automation.view"],
   "menu": [
     {

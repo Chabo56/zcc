@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zcc\Core;
 
 use Zcc\Core\Auth\AuthManager;
+use Zcc\Core\Automation\AutomationStorage;
 use Zcc\Core\Audit\AuditLogger;
 use Zcc\Core\Http\Request;
 use Zcc\Core\Http\Response;
@@ -218,8 +219,45 @@ final class Kernel
             return Response::redirect('/system/updates');
         });
 
+        $router->post('/automation/callback', static function (Request $request): Response {
+            return handleAutomationCallback($request);
+        });
+
         return $router->dispatch($request);
     }
+}
+
+function handleAutomationCallback(Request $request): Response
+{
+    $storage = new AutomationStorage(BASE_PATH . '/storage/automation');
+    $settings = $storage->settings();
+    $token = $request->server['HTTP_X_ZCC_TOKEN'] ?? '';
+    if ($token === '' || !hash_equals((string) ($settings['shared_secret'] ?? ''), $token)) {
+        return new Response('Unauthorized', 401);
+    }
+
+    $payload = json_decode(file_get_contents('php://input') ?: '', true);
+    if (!is_array($payload)) {
+        return new Response('Invalid payload', 400);
+    }
+
+    $requestId = (string) ($payload['request_id'] ?? '');
+    $run = $payload['run'] ?? [];
+    if ($requestId === '' || !is_array($run)) {
+        return new Response('Invalid payload', 400);
+    }
+
+    $storage->updateRun($requestId, [
+        'request_id' => $requestId,
+        'workflow_key' => $run['workflow_key'] ?? '',
+        'status' => $run['status'] ?? '',
+        'started_at' => $run['started_at'] ?? '',
+        'finished_at' => $run['finished_at'] ?? '',
+        'execution_id' => $run['execution_id'] ?? '',
+        'error' => $run['error'] ?? null,
+    ]);
+
+    return new Response('OK', 200);
 }
 
 function applyCoreUpdate(string $zipPath): void

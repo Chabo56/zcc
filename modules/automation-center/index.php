@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Zcc\Core\Auth\AuthManager;
+use Zcc\Core\Automation\AutomationStorage;
+use Zcc\Core\Security\Csrf;
 use Zcc\Core\Settings\SettingsRepository;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
@@ -17,19 +19,36 @@ if (!$auth->check()) {
 
 $view = new View(__DIR__ . '/../../resources/views');
 $theme = new ThemeManager();
+$storage = new AutomationStorage(__DIR__ . '/../../storage/automation');
 
-$content = <<<HTML
-<div class="card">
-    <h2>Automation Center</h2>
-    <p class="muted">Placeholder für Workflows, Runs & Logs, Events und Settings (n8n-first).</p>
-    <ul class="list">
-        <li>Workflows Registry (readonly)</li>
-        <li>Runs & Logs Übersicht</li>
-        <li>Events Mapping</li>
-        <li>Settings (Base URL, Shared Secret)</li>
-    </ul>
-</div>
-HTML;
+$errors = [];
+$success = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!Csrf::validate($_POST['csrf'] ?? null)) {
+        $errors[] = 'Invalid CSRF token.';
+    } else {
+        $action = $_POST['action'] ?? '';
+        if ($action === 'settings') {
+            $settings = $storage->settings();
+            $settings['base_url'] = trim((string) ($_POST['base_url'] ?? ''));
+            $settings['shared_secret'] = trim((string) ($_POST['shared_secret'] ?? $settings['shared_secret']));
+            $settings['timeout'] = (int) ($_POST['timeout'] ?? 30);
+            $storage->saveSettings($settings);
+            $success = 'Settings gespeichert.';
+        }
+    }
+}
+
+$content = $view->render('modules/automation.php', [
+    'csrf' => Csrf::token(),
+    'settings' => $storage->settings(),
+    'workflows' => $storage->workflows(),
+    'events' => $storage->events(),
+    'runs' => $storage->runs(),
+    'errors' => $errors,
+    'success' => $success,
+]);
 
 echo $view->render('layout.php', [
     'title' => 'Automation',

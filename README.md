@@ -39,6 +39,10 @@ Dabei wird `storage/installed.lock` erzeugt.
 - Audit Log: `/system/audit`
 - Core Updates (Backup + Rollback): `/system/updates`
 
+### Automation (Bundle 2 MVP)
+- Automation UI: `/m.php?m=automation-center`
+- Callback Endpoint: `POST /automation/callback` (Header: `X-ZCC-Token`)
+
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
 2. Optional „Modul direkt aktivieren“ auswählen.
