@@ -11,7 +11,7 @@ Dieses Repository enthält ein minimales Core-Gerüst. Um es lokal oder in einer
 
 ### Lokaler Start (Dev)
 ```bash
-php -S 0.0.0.0:8000 -t public
+php -S 0.0.0.0:8000 -t public public/router.php
 ```
 Danach öffnen: `http://localhost:8000`
 
@@ -25,10 +25,19 @@ Standard-Login (nur für den Start gedacht):
 - Benutzer: `admin`
 - Passwort: `admin`
 
+### Installer (MVP)
+Beim ersten Start kann `/install.php` genutzt werden, um Admin-Zugang und Defaults zu schreiben.
+Dabei wird `storage/installed.lock` erzeugt.
+
 ### Hinweise zum Modul-System
 - Modul-Routing läuft über `m.php?m=<key>`.
 - Aktivierte Module werden aus `storage/modules.json` geladen.
 - Modul-Verwaltung erfolgt über `/modules.php` (Upload, Aktivieren/Deaktivieren).
+
+### System (Bundle 1 MVP)
+- Settings: `/system/settings`
+- Audit Log: `/system/audit`
+- Core Updates (Backup + Rollback): `/system/updates`
 
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).

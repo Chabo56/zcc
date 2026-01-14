@@ -181,6 +181,14 @@ a {
     color: var(--text);
 }
 
+.field select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+}
+
 .button {
     padding: 10px 16px;
     border-radius: 8px;
@@ -202,6 +210,22 @@ a {
 
 .inline-form {
     margin: 0;
+}
+
+.module-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.module-actions input[type=\"text\"] {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
 }
 
 .table {

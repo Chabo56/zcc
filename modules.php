@@ -6,17 +6,21 @@ $config = require __DIR__ . '/bootstrap.php';
 
 use Zcc\Core\Auth\AuthManager;
 use Zcc\Core\Modules\ModuleRegistry;
+use Zcc\Core\Audit\AuditLogger;
+use Zcc\Core\Settings\SettingsRepository;
 use Zcc\Core\Security\Csrf;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
-$auth = new AuthManager($config['auth']);
+$settings = new SettingsRepository(__DIR__ . '/storage/settings.json');
+$auth = new AuthManager($config['auth'], $settings);
 if (!$auth->check()) {
     header('Location: /login');
     exit;
 }
 
 $registry = new ModuleRegistry(__DIR__ . '/storage/modules.json');
+$audit = new AuditLogger(__DIR__ . '/storage/audit.log');
 $view = new View(__DIR__ . '/resources/views');
 $theme = new ThemeManager();
 
@@ -36,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $key = (string) ($_POST['key'] ?? '');
         $enabled = ($_POST['enabled'] ?? '') === '1';
         $registry->setEnabled($key, $enabled);
+        $audit->log('module.toggled', ['key' => $key, 'enabled' => $enabled, 'user' => $auth->user()['username'] ?? '']);
         $success = $enabled ? 'Modul aktiviert.' : 'Modul deaktiviert.';
     }
 
@@ -49,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $module = installModuleFromZip($file['tmp_name'], __DIR__ . '/modules');
                 $module['enabled'] = $enableAfter;
                 $registry->register($module);
+                $audit->log('module.installed', ['key' => $module['key'] ?? '', 'user' => $auth->user()['username'] ?? '']);
                 $success = 'Modul installiert: ' . ($module['name'] ?? $module['key']);
             } catch (Throwable $exception) {
                 $errors[] = $exception->getMessage();

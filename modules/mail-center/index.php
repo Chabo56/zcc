@@ -3,11 +3,12 @@
 declare(strict_types=1);
 
 use Zcc\Core\Auth\AuthManager;
+use Zcc\Core\Settings\SettingsRepository;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
 $config = require __DIR__ . '/../../bootstrap.php';
-$auth = new AuthManager($config['auth']);
+$auth = new AuthManager($config['auth'], new SettingsRepository(__DIR__ . '/../../storage/settings.json'));
 
 if (!$auth->check()) {
     header('Location: /login');

@@ -8,13 +8,22 @@ final class AuthManager
 {
     private const SESSION_KEY = 'zcc_user';
 
-    public function __construct(private readonly array $config)
+    public function __construct(
+        private readonly array $config,
+        private readonly ?\Zcc\Core\Settings\SettingsRepository $settings = null,
+    )
     {
     }
 
     public function attempt(string $username, string $password): bool
     {
         $admin = $this->config['default_admin'] ?? [];
+        if ($this->settings) {
+            $stored = $this->settings->get('admin', []);
+            if (is_array($stored) && $stored !== []) {
+                $admin = $stored;
+            }
+        }
         if ($username !== ($admin['username'] ?? '') || $password !== ($admin['password'] ?? '')) {
             return false;
         }
