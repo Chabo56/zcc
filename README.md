@@ -1,5 +1,35 @@
 # zcc
 
+## Installation (lokal / Plesk kompatibel)
+
+Dieses Repository enthält ein minimales Core-Gerüst. Um es lokal oder in einer Plesk-ähnlichen Umgebung zu starten, brauchen Sie nur PHP mit Webserver (oder PHP built-in Server). Die Core-Dateien liegen unter `public/` als Webroot.
+
+### Voraussetzungen
+- PHP 8.1+ (mit `json`, `openssl`, `session` aktiviert)
+- Webserver (Apache/Nginx) **oder** PHP built-in Server
+- Schreibrechte für `storage/` (Module-Registry, Logs, Backups später)
+
+### Lokaler Start (Dev)
+```bash
+php -S 0.0.0.0:8000 -t public
+```
+Danach öffnen: `http://localhost:8000`
+
+### Plesk / Shared Hosting (ZIP-Upload)
+1. ZIP des Projekts in das Webroot entpacken.
+2. Webroot auf `public/` setzen (DocumentRoot).
+3. Schreibrechte auf `storage/` sicherstellen.
+
+### Login
+Standard-Login (nur für den Start gedacht):
+- Benutzer: `admin`
+- Passwort: `admin`
+
+### Hinweise zum Modul-System
+- Modul-Routing läuft über `m.php?m=<key>`.
+- Aktivierte Module werden aus `storage/modules.json` geladen.
+
+
 # 🧠 ZenityDent Control Center (ZCC) — Master-Prompt (Core + Module-System + n8n-first)
 
 > Zweck: Dieser Prompt beschreibt **das komplette Zielsystem** für ein eigenständiges „ZenityDent Control Center“ (ZCC) als internes Control Center.
