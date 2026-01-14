@@ -1,0 +1,21 @@
+{
+  "key": "mail-center",
+  "name": "Mail Center",
+  "version": "0.1.0",
+  "description": "OVH Zimbra header sync + KI Compose shell.",
+  "permissions": ["mail.view"],
+  "menu": [
+    {
+      "title": "Mail",
+      "url": "/m.php?m=mail-center",
+      "group": "Mail",
+      "icon": "mail"
+    }
+  ],
+  "submenu": [
+    {"title": "Inbox", "url": "/m.php?m=mail-center#inbox"},
+    {"title": "Compose (KI)", "url": "/m.php?m=mail-center#compose"},
+    {"title": "Drafts", "url": "/m.php?m=mail-center#drafts"},
+    {"title": "Settings", "url": "/m.php?m=mail-center#settings"}
+  ]
+}

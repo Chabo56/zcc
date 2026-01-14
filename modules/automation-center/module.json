@@ -1,0 +1,21 @@
+{
+  "key": "automation-center",
+  "name": "Automation Center",
+  "version": "0.1.0",
+  "description": "n8n-first automation registry shell.",
+  "permissions": ["automation.view"],
+  "menu": [
+    {
+      "title": "Automation",
+      "url": "/m.php?m=automation-center",
+      "group": "Automation",
+      "icon": "workflow"
+    }
+  ],
+  "submenu": [
+    {"title": "Workflows", "url": "/m.php?m=automation-center#workflows"},
+    {"title": "Runs & Logs", "url": "/m.php?m=automation-center#runs"},
+    {"title": "Events", "url": "/m.php?m=automation-center#events"},
+    {"title": "Settings", "url": "/m.php?m=automation-center#settings"}
+  ]
+}
