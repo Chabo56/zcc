@@ -29,6 +29,41 @@ Standard-Login (nur für den Start gedacht):
 - Modul-Routing läuft über `m.php?m=<key>`.
 - Aktivierte Module werden aus `storage/modules.json` geladen.
 
+#### Module installieren (MVP)
+Aktuell gibt es **keinen** `/modules.php`-Upload. Für den MVP-Start geht es manuell:
+1. Modul-Ordner unter `modules/<key>/` ablegen (mit `index.php` im Root).
+2. `storage/modules.json` um das Modul ergänzen und auf `enabled: true` setzen.
+
+Beispiel `storage/modules.json`:
+```json
+[
+  {
+    "key": "demo-module",
+    "name": "Demo Module",
+    "version": "0.1.0",
+    "enabled": true
+  }
+]
+```
+
+Minimaler Modul-Ordner:
+```
+modules/
+  demo-module/
+    index.php
+```
+
+Beispiel `modules/demo-module/index.php`:
+```php
+<?php
+echo "Hallo aus dem Demo-Modul!";
+```
+
+Aufruf im Browser:
+```
+/m.php?m=demo-module
+```
+
 
 # 🧠 ZenityDent Control Center (ZCC) — Master-Prompt (Core + Module-System + n8n-first)
 
