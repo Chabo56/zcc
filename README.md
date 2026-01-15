@@ -43,6 +43,11 @@ Dabei wird `storage/installed.lock` erzeugt.
 - Automation UI: `/m.php?m=automation-center`
 - Callback Endpoint: `POST /automation/callback` (Header: `X-ZCC-Token`)
 
+### Mail (Bundle 3 MVP)
+- Mail UI: `/m.php?m=mail-center`
+- Compose Request → n8n via `n8n_url` (Settings)
+- Draft Updates via `/automation/callback`
+
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
 2. Optional „Modul direkt aktivieren“ auswählen.

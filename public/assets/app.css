@@ -189,6 +189,15 @@ a {
     color: var(--text);
 }
 
+.field textarea {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    resize: vertical;
+}
+
 .button {
     padding: 10px 16px;
     border-radius: 8px;

@@ -2,7 +2,7 @@
   "key": "mail-center",
   "name": "Mail Center",
   "version": "0.1.0",
-  "description": "OVH Zimbra header sync + KI Compose shell.",
+  "description": "OVH Zimbra header cache + KI Compose MVP.",
   "permissions": ["mail.view"],
   "menu": [
     {

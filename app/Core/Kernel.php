@@ -230,6 +230,7 @@ final class Kernel
 function handleAutomationCallback(Request $request): Response
 {
     $storage = new AutomationStorage(BASE_PATH . '/storage/automation');
+    $mailStorage = new MailStorage(BASE_PATH . '/storage/mail');
     $settings = $storage->settings();
     $token = $request->server['HTTP_X_ZCC_TOKEN'] ?? '';
     if ($token === '' || !hash_equals((string) ($settings['shared_secret'] ?? ''), $token)) {
@@ -256,6 +257,26 @@ function handleAutomationCallback(Request $request): Response
         'execution_id' => $run['execution_id'] ?? '',
         'error' => $run['error'] ?? null,
     ]);
+
+    $updates = $payload['updates'] ?? [];
+    if (is_array($updates)) {
+        foreach ($updates as $update) {
+            if (!is_array($update)) {
+                continue;
+            }
+            $entity = $update['entity'] ?? [];
+            $patch = $update['patch'] ?? [];
+            if (($entity['type'] ?? '') === 'mail_draft' && is_array($patch)) {
+                $mailStorage->saveDraft([
+                    'id' => (string) ($entity['id'] ?? $requestId),
+                    'subject' => $patch['subject'] ?? '',
+                    'body_text' => $patch['body_text'] ?? '',
+                    'body_html' => $patch['body_html'] ?? '',
+                    'updated_at' => date(DATE_ATOM),
+                ]);
+            }
+        }
+    }
 
     return new Response('OK', 200);
 }
@@ -395,3 +416,4 @@ function restoreCoreBackup(string $file): void
 
     $zip->close();
 }
+use Zcc\Core\Mail\MailStorage;
