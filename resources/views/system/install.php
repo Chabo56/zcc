@@ -2,11 +2,15 @@
 /** @var string $csrf */
 /** @var array $errors */
 /** @var string|null $db_status */
+/** @var string|null $schema_status */
 ?>
 <div class="card card--narrow">
     <h2>ZCC Installer</h2>
     <?php if ($db_status): ?>
         <p class="alert alert--success"><?php echo htmlspecialchars($db_status, ENT_QUOTES); ?></p>
+    <?php endif; ?>
+    <?php if ($schema_status): ?>
+        <p class="alert alert--success"><?php echo htmlspecialchars($schema_status, ENT_QUOTES); ?></p>
     <?php endif; ?>
     <?php foreach ($errors as $error): ?>
         <p class="alert"><?php echo htmlspecialchars($error, ENT_QUOTES); ?></p>
@@ -28,6 +32,10 @@
         <label class="field">
             <span>DB Password</span>
             <input type="password" name="db_pass">
+        </label>
+        <label class="field field--inline">
+            <input type="checkbox" name="apply_schema" value="1">
+            <span>Schema anwenden (storage/schema.sql)</span>
         </label>
         <label class="field">
             <span>Admin Username</span>

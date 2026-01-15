@@ -107,6 +107,10 @@ Erzeugt ZIPs pro Modul unter `dist/modules/`.
 - `shopware-refresh`
 - `automation-registry`
 
+## n8n Workflow Library (Platzhalter)
+Die aktuellen Platzhalter-Exports liegen unter `n8n/workflows/` und tragen das Schema
+`ZD - <Domain> - <Action> - v1`.
+
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
 2. Optional „Modul direkt aktivieren“ auswählen.

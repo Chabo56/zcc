@@ -5,6 +5,7 @@ declare(strict_types=1);
 $config = require __DIR__ . '/bootstrap.php';
 
 use Zcc\Core\Security\Csrf;
+use Zcc\Core\Database\Database;
 use Zcc\Core\Settings\SettingsRepository;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
@@ -22,6 +23,7 @@ $theme = new ThemeManager();
 
 $errors = [];
 $dbStatus = null;
+$schemaStatus = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!Csrf::validate($_POST['csrf'] ?? null)) {
@@ -48,6 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'username' => $dbUser,
                     'password' => $dbPass,
                 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+                if (($_POST['apply_schema'] ?? '') === '1') {
+                    $database = new Database($dbPath);
+                    $database->applySchema(__DIR__ . '/storage/schema.sql');
+                    $schemaStatus = 'Schema angewendet.';
+                }
             } catch (Throwable $exception) {
                 $errors[] = 'DB-Verbindung fehlgeschlagen: ' . $exception->getMessage();
             }
@@ -82,6 +90,7 @@ $content = $view->render('system/install.php', [
     'csrf' => Csrf::token(),
     'errors' => $errors,
     'db_status' => $dbStatus,
+    'schema_status' => $schemaStatus,
 ]);
 
 echo $view->render('layout.php', [
