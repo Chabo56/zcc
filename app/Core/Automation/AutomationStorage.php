@@ -6,8 +6,17 @@ namespace Zcc\Core\Automation;
 
 final class AutomationStorage
 {
-    public function __construct(private readonly string $basePath)
+    private ?\PDO $pdo = null;
+
+    public function __construct(private readonly string $basePath, ?\Zcc\Core\Database\DbConnector $connector = null)
     {
+        if ($connector && $connector->isConfigured()) {
+            try {
+                $this->pdo = $connector->connect();
+            } catch (\Throwable) {
+                $this->pdo = null;
+            }
+        }
     }
 
     public function settings(): array
@@ -46,11 +55,30 @@ final class AutomationStorage
 
     public function runs(): array
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->query('SELECT request_id, workflow_key, status, started_at, finished_at, execution_id, error FROM automation_runs ORDER BY id DESC LIMIT 100');
+            return $stmt ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
+        }
+
         return $this->readJson($this->basePath . '/runs.json', []);
     }
 
     public function appendRun(array $run): void
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->prepare('INSERT INTO automation_runs (request_id, workflow_key, status, started_at, finished_at, execution_id, error) VALUES (:request_id, :workflow_key, :status, :started_at, :finished_at, :execution_id, :error)');
+            $stmt->execute([
+                'request_id' => $run['request_id'] ?? '',
+                'workflow_key' => $run['workflow_key'] ?? '',
+                'status' => $run['status'] ?? '',
+                'started_at' => $run['started_at'] ?? null,
+                'finished_at' => $run['finished_at'] ?? null,
+                'execution_id' => $run['execution_id'] ?? null,
+                'error' => json_encode($run['error'] ?? null),
+            ]);
+            return;
+        }
+
         $runs = $this->runs();
         $runs[] = $run;
         $this->writeJson($this->basePath . '/runs.json', $runs);
@@ -58,6 +86,20 @@ final class AutomationStorage
 
     public function updateRun(string $requestId, array $update): void
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->prepare('INSERT INTO automation_runs (request_id, workflow_key, status, started_at, finished_at, execution_id, error) VALUES (:request_id, :workflow_key, :status, :started_at, :finished_at, :execution_id, :error) ON DUPLICATE KEY UPDATE workflow_key = VALUES(workflow_key), status = VALUES(status), started_at = VALUES(started_at), finished_at = VALUES(finished_at), execution_id = VALUES(execution_id), error = VALUES(error)');
+            $stmt->execute([
+                'request_id' => $requestId,
+                'workflow_key' => $update['workflow_key'] ?? '',
+                'status' => $update['status'] ?? '',
+                'started_at' => $update['started_at'] ?? null,
+                'finished_at' => $update['finished_at'] ?? null,
+                'execution_id' => $update['execution_id'] ?? null,
+                'error' => json_encode($update['error'] ?? null),
+            ]);
+            return;
+        }
+
         $runs = $this->runs();
         foreach ($runs as $index => $entry) {
             if (($entry['request_id'] ?? '') === $requestId) {

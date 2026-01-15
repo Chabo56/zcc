@@ -6,6 +6,7 @@ namespace Zcc\Core;
 
 use Zcc\Core\Auth\AuthManager;
 use Zcc\Core\Automation\AutomationStorage;
+use Zcc\Core\Database\DbConnector;
 use Zcc\Core\Audit\AuditLogger;
 use Zcc\Core\Http\Request;
 use Zcc\Core\Http\Response;
@@ -30,7 +31,7 @@ final class Kernel
 
         $router = new Router();
         $view = new View(BASE_PATH . '/resources/views');
-        $settings = new SettingsRepository(BASE_PATH . '/storage/settings.json');
+        $settings = new SettingsRepository(BASE_PATH . '/storage/settings.json', new DbConnector(BASE_PATH . '/storage/db.json'));
         $auth = new AuthManager($this->config['auth'], $settings);
         $theme = new ThemeManager();
         $audit = new AuditLogger(BASE_PATH . '/storage/audit.log');
@@ -229,8 +230,9 @@ final class Kernel
 
 function handleAutomationCallback(Request $request): Response
 {
-    $storage = new AutomationStorage(BASE_PATH . '/storage/automation');
-    $mailStorage = new MailStorage(BASE_PATH . '/storage/mail');
+    $connector = new DbConnector(BASE_PATH . '/storage/db.json');
+    $storage = new AutomationStorage(BASE_PATH . '/storage/automation', $connector);
+    $mailStorage = new MailStorage(BASE_PATH . '/storage/mail', $connector);
     $settings = $storage->settings();
     $token = $request->server['HTTP_X_ZCC_TOKEN'] ?? '';
     if ($token === '' || !hash_equals((string) ($settings['shared_secret'] ?? ''), $token)) {

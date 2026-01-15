@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 use Zcc\Core\Auth\AuthManager;
 use Zcc\Core\Shopware\ShopwareStorage;
+use Zcc\Core\Database\DbConnector;
 use Zcc\Core\Security\Csrf;
 use Zcc\Core\Settings\SettingsRepository;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
 $config = require __DIR__ . '/../../bootstrap.php';
-$auth = new AuthManager($config['auth'], new SettingsRepository(__DIR__ . '/../../storage/settings.json'));
+$auth = new AuthManager($config['auth'], new SettingsRepository(__DIR__ . '/../../storage/settings.json', new DbConnector(__DIR__ . '/../../storage/db.json')));
 
 if (!$auth->check()) {
     header('Location: /login');
@@ -19,7 +20,7 @@ if (!$auth->check()) {
 
 $view = new View(__DIR__ . '/../../resources/views');
 $theme = new ThemeManager();
-$storage = new ShopwareStorage(__DIR__ . '/../../storage/shopware');
+$storage = new ShopwareStorage(__DIR__ . '/../../storage/shopware', new DbConnector(__DIR__ . '/../../storage/db.json'));
 
 $errors = [];
 $success = null;

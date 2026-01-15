@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS automation_runs (
   started_at DATETIME NULL,
   finished_at DATETIME NULL,
   execution_id VARCHAR(100) NULL,
-  error JSON NULL
+  error JSON NULL,
+  UNIQUE KEY automation_runs_request_id (request_id)
 );
 
 CREATE TABLE IF NOT EXISTS mail_index (
@@ -54,7 +55,24 @@ CREATE TABLE IF NOT EXISTS mail_drafts (
   subject VARCHAR(255) NOT NULL,
   body_text TEXT NULL,
   body_html MEDIUMTEXT NULL,
-  updated_at DATETIME NULL
+  updated_at DATETIME NULL,
+  UNIQUE KEY mail_drafts_draft_id (draft_id)
+);
+
+CREATE TABLE IF NOT EXISTS mail_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  request_id VARCHAR(100) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  payload JSON NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY mail_requests_request_id (request_id)
+);
+
+CREATE TABLE IF NOT EXISTS shopware_metrics (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  orders_today INT NOT NULL DEFAULT 0,
+  revenue_today DECIMAL(10,2) NOT NULL DEFAULT 0,
+  last_updated DATETIME NULL
 );
 
 CREATE TABLE IF NOT EXISTS shopware_orders (

@@ -29,6 +29,7 @@ Standard-Login (nur für den Start gedacht):
 Beim ersten Start kann `/install.php` genutzt werden, um Admin-Zugang und Defaults zu schreiben.
 Dabei wird `storage/installed.lock` erzeugt.
 DB-Zugangsdaten werden geprüft und in `storage/db.json` gespeichert.
+Wenn vorhanden, nutzt der Core die DB für Settings/Runs/Mail/Shopware (Fallback: JSON).
 
 ### Hinweise zum Modul-System
 - Modul-Routing läuft über `m.php?m=<key>`.

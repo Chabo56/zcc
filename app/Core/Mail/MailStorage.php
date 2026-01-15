@@ -6,8 +6,17 @@ namespace Zcc\Core\Mail;
 
 final class MailStorage
 {
-    public function __construct(private readonly string $basePath)
+    private ?\PDO $pdo = null;
+
+    public function __construct(private readonly string $basePath, ?\Zcc\Core\Database\DbConnector $connector = null)
     {
+        if ($connector && $connector->isConfigured()) {
+            try {
+                $this->pdo = $connector->connect();
+            } catch (\Throwable) {
+                $this->pdo = null;
+            }
+        }
     }
 
     public function settings(): array
@@ -28,16 +37,38 @@ final class MailStorage
 
     public function index(): array
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->query('SELECT sender AS `from`, subject, received_at AS `date` FROM mail_index ORDER BY received_at DESC LIMIT 50');
+            return $stmt ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
+        }
+
         return $this->readJson($this->basePath . '/index.json', []);
     }
 
     public function drafts(): array
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->query('SELECT draft_id AS id, subject, updated_at FROM mail_drafts ORDER BY updated_at DESC LIMIT 50');
+            return $stmt ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
+        }
+
         return $this->readJson($this->basePath . '/drafts.json', []);
     }
 
     public function saveDraft(array $draft): void
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->prepare('INSERT INTO mail_drafts (draft_id, subject, body_text, body_html, updated_at) VALUES (:id, :subject, :body_text, :body_html, :updated_at) ON DUPLICATE KEY UPDATE subject = VALUES(subject), body_text = VALUES(body_text), body_html = VALUES(body_html), updated_at = VALUES(updated_at)');
+            $stmt->execute([
+                'id' => $draft['id'] ?? '',
+                'subject' => $draft['subject'] ?? '',
+                'body_text' => $draft['body_text'] ?? null,
+                'body_html' => $draft['body_html'] ?? null,
+                'updated_at' => $draft['updated_at'] ?? null,
+            ]);
+            return;
+        }
+
         $drafts = $this->drafts();
         $id = $draft['id'] ?? null;
         if ($id) {
@@ -56,11 +87,27 @@ final class MailStorage
 
     public function requests(): array
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->query('SELECT request_id, status, created_at FROM mail_requests ORDER BY created_at DESC LIMIT 50');
+            return $stmt ? $stmt->fetchAll(\PDO::FETCH_ASSOC) : [];
+        }
+
         return $this->readJson($this->basePath . '/requests.json', []);
     }
 
     public function appendRequest(array $request): void
     {
+        if ($this->pdo) {
+            $stmt = $this->pdo->prepare('INSERT INTO mail_requests (request_id, status, payload, created_at) VALUES (:request_id, :status, :payload, :created_at)');
+            $stmt->execute([
+                'request_id' => $request['request_id'] ?? '',
+                'status' => $request['status'] ?? '',
+                'payload' => json_encode($request['payload'] ?? [], JSON_UNESCAPED_SLASHES),
+                'created_at' => $request['created_at'] ?? null,
+            ]);
+            return;
+        }
+
         $requests = $this->requests();
         $requests[] = $request;
         $this->writeJson($this->basePath . '/requests.json', $requests);

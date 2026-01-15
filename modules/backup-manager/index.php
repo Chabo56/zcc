@@ -6,11 +6,12 @@ use Zcc\Core\Auth\AuthManager;
 use Zcc\Core\Backup\BackupManager;
 use Zcc\Core\Security\Csrf;
 use Zcc\Core\Settings\SettingsRepository;
+use Zcc\Core\Database\DbConnector;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
 $config = require __DIR__ . '/../../bootstrap.php';
-$auth = new AuthManager($config['auth'], new SettingsRepository(__DIR__ . '/../../storage/settings.json'));
+$auth = new AuthManager($config['auth'], new SettingsRepository(__DIR__ . '/../../storage/settings.json', new DbConnector(__DIR__ . '/../../storage/db.json')));
 
 if (!$auth->check()) {
     header('Location: /login');
@@ -19,7 +20,7 @@ if (!$auth->check()) {
 
 $view = new View(__DIR__ . '/../../resources/views');
 $theme = new ThemeManager();
-$nextcloudSettings = new SettingsRepository(__DIR__ . '/../../storage/nextcloud.json');
+$nextcloudSettings = new SettingsRepository(__DIR__ . '/../../storage/nextcloud.json', new DbConnector(__DIR__ . '/../../storage/db.json'));
 $manager = new BackupManager(__DIR__ . '/../../storage/backups', $nextcloudSettings);
 
 $errors = [];

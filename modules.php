@@ -7,12 +7,13 @@ $config = require __DIR__ . '/bootstrap.php';
 use Zcc\Core\Auth\AuthManager;
 use Zcc\Core\Modules\ModuleRegistry;
 use Zcc\Core\Audit\AuditLogger;
+use Zcc\Core\Database\DbConnector;
 use Zcc\Core\Settings\SettingsRepository;
 use Zcc\Core\Security\Csrf;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
-$settings = new SettingsRepository(__DIR__ . '/storage/settings.json');
+$settings = new SettingsRepository(__DIR__ . '/storage/settings.json', new DbConnector(__DIR__ . '/storage/db.json'));
 $auth = new AuthManager($config['auth'], $settings);
 if (!$auth->check()) {
     header('Location: /login');
