@@ -237,6 +237,33 @@ a {
     color: var(--text);
 }
 
+.stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.stat {
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 180px;
+}
+
+.stat__label {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.stat__value {
+    font-size: 24px;
+    font-weight: 700;
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;

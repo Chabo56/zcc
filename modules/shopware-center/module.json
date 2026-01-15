@@ -2,7 +2,7 @@
   "key": "shopware-center",
   "name": "Shopware Widget",
   "version": "0.1.0",
-  "description": "Shopware 6 metrics cache shell.",
+  "description": "Shopware 6 cache widget MVP.",
   "permissions": ["shopware.view"],
   "menu": [
     {

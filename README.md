@@ -48,6 +48,10 @@ Dabei wird `storage/installed.lock` erzeugt.
 - Compose Request → n8n via `n8n_url` (Settings)
 - Draft Updates via `/automation/callback`
 
+### Shopware (Bundle 4 MVP)
+- Shopware UI: `/m.php?m=shopware-center`
+- Refresh Trigger → n8n via `n8n_url` (Settings)
+
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
 2. Optional „Modul direkt aktivieren“ auswählen.
