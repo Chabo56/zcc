@@ -52,6 +52,10 @@ Dabei wird `storage/installed.lock` erzeugt.
 - Shopware UI: `/m.php?m=shopware-center`
 - Refresh Trigger → n8n via `n8n_url` (Settings)
 
+### Backups (Bundle 5 MVP)
+- Backup Manager: `/m.php?m=backup-manager`
+- Upload nach Nextcloud WebDAV `/ZenityDent/backups/db/YYYY-MM-DD`
+
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
 2. Optional „Modul direkt aktivieren“ auswählen.

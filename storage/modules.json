@@ -28,5 +28,11 @@
     "name": "Business Light",
     "version": "0.1.0",
     "enabled": true
+  },
+  {
+    "key": "backup-manager",
+    "name": "Backup Manager",
+    "version": "0.1.0",
+    "enabled": true
   }
 ]

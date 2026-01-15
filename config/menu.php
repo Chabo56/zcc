@@ -76,6 +76,7 @@ return [
             ['title' => 'Permissions', 'url' => '/system/permissions'],
             ['title' => 'Audit Log', 'url' => '/system/audit'],
             ['title' => 'Modules', 'url' => '/modules.php'],
+            ['title' => 'Backups', 'url' => '/m.php?m=backup-manager'],
             ['title' => 'Core Updates', 'url' => '/system/updates'],
             ['title' => 'Settings', 'url' => '/system/settings'],
         ],
