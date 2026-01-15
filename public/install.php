@@ -10,6 +10,7 @@ use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
 $lockPath = __DIR__ . '/storage/installed.lock';
+$dbPath = __DIR__ . '/storage/db.json';
 if (is_file($lockPath)) {
     header('Location: /login');
     exit;
@@ -20,17 +21,46 @@ $view = new View(__DIR__ . '/resources/views');
 $theme = new ThemeManager();
 
 $errors = [];
+$dbStatus = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!Csrf::validate($_POST['csrf'] ?? null)) {
         $errors[] = 'Invalid CSRF token.';
     } else {
+        $dbHost = trim((string) ($_POST['db_host'] ?? ''));
+        $dbName = trim((string) ($_POST['db_name'] ?? ''));
+        $dbUser = trim((string) ($_POST['db_user'] ?? ''));
+        $dbPass = (string) ($_POST['db_pass'] ?? '');
+
+        if ($dbHost === '' || $dbName === '' || $dbUser === '') {
+            $errors[] = 'DB-Zugangsdaten fehlen.';
+        } else {
+            try {
+                $dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $dbHost, $dbName);
+                new PDO($dsn, $dbUser, $dbPass, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                ]);
+                $dbStatus = 'DB-Verbindung OK.';
+                file_put_contents($dbPath, json_encode([
+                    'driver' => 'mysql',
+                    'host' => $dbHost,
+                    'database' => $dbName,
+                    'username' => $dbUser,
+                    'password' => $dbPass,
+                ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            } catch (Throwable $exception) {
+                $errors[] = 'DB-Verbindung fehlgeschlagen: ' . $exception->getMessage();
+            }
+        }
+
         $adminUser = trim((string) ($_POST['admin_username'] ?? ''));
         $adminPass = trim((string) ($_POST['admin_password'] ?? ''));
 
         if ($adminUser === '' || $adminPass === '') {
             $errors[] = 'Admin-Zugangsdaten fehlen.';
-        } else {
+        }
+
+        if ($errors === []) {
             $settings->save([
                 'admin' => [
                     'username' => $adminUser,
@@ -51,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $content = $view->render('system/install.php', [
     'csrf' => Csrf::token(),
     'errors' => $errors,
+    'db_status' => $dbStatus,
 ]);
 
 echo $view->render('layout.php', [

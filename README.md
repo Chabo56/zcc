@@ -28,6 +28,7 @@ Standard-Login (nur für den Start gedacht):
 ### Installer (MVP)
 Beim ersten Start kann `/install.php` genutzt werden, um Admin-Zugang und Defaults zu schreiben.
 Dabei wird `storage/installed.lock` erzeugt.
+DB-Zugangsdaten werden geprüft und in `storage/db.json` gespeichert.
 
 ### Hinweise zum Modul-System
 - Modul-Routing läuft über `m.php?m=<key>`.
@@ -55,6 +56,56 @@ Dabei wird `storage/installed.lock` erzeugt.
 ### Backups (Bundle 5 MVP)
 - Backup Manager: `/m.php?m=backup-manager`
 - Upload nach Nextcloud WebDAV `/ZenityDent/backups/db/YYYY-MM-DD`
+
+## Build & Export
+### ZCC ZIP (Plesk)
+```bash
+./scripts/build_zip.sh
+```
+Erzeugt `dist/zcc.zip`.
+
+### Module ZIP Exporte
+```bash
+./scripts/export_modules.sh
+```
+Erzeugt ZIPs pro Modul unter `dist/modules/`.
+
+## Settings Keys (MVP)
+### Core (`storage/settings.json`)
+- `admin.username`
+- `admin.password`
+- `registration_enabled`
+- `theme_default`
+- `base_url`
+
+### Nextcloud (`storage/nextcloud.json`)
+- `base_url`
+- `username`
+- `password`
+- `root`
+
+### Automation (`storage/automation/settings.json`)
+- `base_url`
+- `shared_secret`
+- `timeout`
+
+### Mail (`storage/mail/settings.json`)
+- `imap_host`
+- `imap_user`
+- `imap_password`
+- `smtp_host`
+- `n8n_url`
+
+### Shopware (`storage/shopware/settings.json`)
+- `n8n_url`
+
+## Required Headers
+- `X-ZCC-Token`: Shared secret für `/automation/callback`
+
+## Workflow Keys (MVP)
+- `mail-compose`
+- `shopware-refresh`
+- `automation-registry`
 
 #### Module installieren (ZIP-Upload)
 1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
