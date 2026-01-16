@@ -1,5 +1,147 @@
 # zcc
 
+## Installation (lokal / Plesk kompatibel)
+
+Dieses Repository enthält ein minimales Core-Gerüst. Um es lokal oder in einer Plesk-ähnlichen Umgebung zu starten, brauchen Sie nur PHP mit Webserver (oder PHP built-in Server). Die Core-Dateien liegen unter `public/` als Webroot.
+
+### Voraussetzungen
+- PHP 8.1+ (mit `json`, `openssl`, `session` aktiviert)
+- Webserver (Apache/Nginx) **oder** PHP built-in Server
+- Schreibrechte für `storage/` (Module-Registry, Logs, Backups später)
+
+### Lokaler Start (Dev)
+```bash
+php -S 0.0.0.0:8000 -t public public/router.php
+```
+Danach öffnen: `http://localhost:8000`
+
+### Plesk / Shared Hosting (ZIP-Upload)
+1. ZIP des Projekts in das Webroot entpacken.
+2. Webroot auf `public/` setzen (DocumentRoot).
+3. Schreibrechte auf `storage/` sicherstellen.
+
+### Login
+Standard-Login (nur für den Start gedacht):
+- Benutzer: `admin`
+- Passwort: `admin`
+
+### Installer (MVP)
+Beim ersten Start kann `/install.php` genutzt werden, um Admin-Zugang und Defaults zu schreiben.
+Dabei wird `storage/installed.lock` erzeugt.
+DB-Zugangsdaten werden geprüft und in `storage/db.json` gespeichert.
+Wenn vorhanden, nutzt der Core die DB für Settings/Runs/Mail/Shopware (Fallback: JSON).
+
+### Hinweise zum Modul-System
+- Modul-Routing läuft über `m.php?m=<key>`.
+- Aktivierte Module werden aus `storage/modules.json` geladen.
+- Modul-Verwaltung erfolgt über `/modules.php` (Upload, Aktivieren/Deaktivieren).
+
+### System (Bundle 1 MVP)
+- Settings: `/system/settings`
+- Audit Log: `/system/audit`
+- Core Updates (Backup + Rollback): `/system/updates`
+
+### Automation (Bundle 2 MVP)
+- Automation UI: `/m.php?m=automation-center`
+- Callback Endpoint: `POST /automation/callback` (Header: `X-ZCC-Token`)
+- Ingest Endpoints: `POST /mail/ingest`, `POST /shopware/ingest` (Header: `X-ZCC-Token`)
+
+### Mail (Bundle 3 MVP)
+- Mail UI: `/m.php?m=mail-center`
+- Compose Request → n8n via `n8n_url` (Settings)
+- Draft Updates via `/automation/callback`
+- Header Cache Ingest via `POST /mail/ingest` (payload: `index`, optional `drafts`)
+
+### Shopware (Bundle 4 MVP)
+- Shopware UI: `/m.php?m=shopware-center`
+- Refresh Trigger → n8n via `n8n_url` (Settings)
+- Cache Ingest via `POST /shopware/ingest` (payload: `metrics`, `orders`)
+
+### Backups (Bundle 5 MVP)
+- Backup Manager: `/m.php?m=backup-manager`
+- Upload nach Nextcloud WebDAV `/ZenityDent/backups/db/YYYY-MM-DD`
+
+## Build & Export
+### ZCC ZIP (Plesk)
+```bash
+./scripts/build_zip.sh
+```
+Erzeugt `dist/zcc.zip`.
+
+### Module ZIP Exporte
+```bash
+./scripts/export_modules.sh
+```
+Erzeugt ZIPs pro Modul unter `dist/modules/`.
+
+## Settings Keys (MVP)
+### Core (`storage/settings.json`)
+- `admin.username`
+- `admin.password`
+- `registration_enabled`
+- `theme_default`
+- `base_url`
+
+### Nextcloud (`storage/nextcloud.json`)
+- `base_url`
+- `username`
+- `password`
+- `root`
+
+### Automation (`storage/automation/settings.json`)
+- `base_url`
+- `shared_secret`
+- `timeout`
+
+### Mail (`storage/mail/settings.json`)
+- `imap_host`
+- `imap_user`
+- `imap_password`
+- `smtp_host`
+- `n8n_url`
+
+### Shopware (`storage/shopware/settings.json`)
+- `n8n_url`
+
+## Required Headers
+- `X-ZCC-Token`: Shared secret für `/automation/callback`
+
+## Workflow Keys (MVP)
+- `mail-compose`
+- `shopware-refresh`
+- `automation-registry`
+- `mail-header-sync`
+- `backup-rotation`
+
+## n8n Workflow Library (Platzhalter)
+Die aktuellen Platzhalter-Exports liegen unter `n8n/workflows/` und tragen das Schema
+`ZD - <Domain> - <Action> - v1`.
+Eine ausführlichere Workflow-Spezifikation für n8n findet sich unter `n8n/workflows/README.md`.
+Eine Schritt-für-Schritt-Anleitung zur n8n-Installation ist unter `n8n/README.md` dokumentiert.
+
+#### Module installieren (ZIP-Upload)
+1. ZIP mit `module.json` im Root hochladen (UI unter `/modules.php`).
+2. Optional „Modul direkt aktivieren“ auswählen.
+3. Modul ist über `/m.php?m=<key>` erreichbar.
+
+#### Module manuell (Fallback)
+Wenn kein ZIP verfügbar ist:
+1. Modul-Ordner unter `modules/<key>/` ablegen (mit `index.php` im Root).
+2. `storage/modules.json` um das Modul ergänzen und auf `enabled: true` setzen.
+
+Beispiel `storage/modules.json`:
+```json
+[
+  {
+    "key": "demo-module",
+    "name": "Demo Module",
+    "version": "0.1.0",
+    "enabled": true
+  }
+]
+```
+
+
 # 🧠 ZenityDent Control Center (ZCC) — Master-Prompt (Core + Module-System + n8n-first)
 
 > Zweck: Dieser Prompt beschreibt **das komplette Zielsystem** für ein eigenständiges „ZenityDent Control Center“ (ZCC) als internes Control Center.

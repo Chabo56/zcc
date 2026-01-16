@@ -1,0 +1,88 @@
+{
+  "name": "ZD - Mail - Compose - v1",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "mail-compose",
+        "options": {}
+      },
+      "id": "compose-webhook",
+      "name": "Compose Request",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "request_id",
+              "value": "={{$json.request_id}}"
+            }
+          ]
+        }
+      },
+      "id": "compose-set",
+      "name": "Prepare Draft",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ZCC_BASE_URL}}/automation/callback",
+        "jsonParameters": true,
+        "headerParametersJson": "{\"X-ZCC-Token\": \"{{$env.ZCC_SHARED_SECRET}}\"}",
+        "bodyParametersJson": "={{$json}}"
+      },
+      "id": "compose-callback",
+      "name": "Send Draft to ZCC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        780,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Compose Request": {
+      "main": [
+        [
+          {
+            "node": "Prepare Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Draft": {
+      "main": [
+        [
+          {
+            "node": "Send Draft to ZCC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "zd-mail-compose-v1",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "zcc-export"
+  },
+  "tags": []
+}

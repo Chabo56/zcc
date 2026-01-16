@@ -1,0 +1,64 @@
+{
+  "name": "ZD - Mail - Header Sync - v1",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 5,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "header-cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ZCC_BASE_URL}}/mail/ingest",
+        "jsonParameters": true,
+        "headerParametersJson": "{\"X-ZCC-Token\": \"{{$env.ZCC_SHARED_SECRET}}\"}",
+        "bodyParametersJson": "={{$json}}"
+      },
+      "id": "header-ingest",
+      "name": "Send Header Cache",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Send Header Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "zd-mail-header-sync-v1",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "zcc-export"
+  },
+  "tags": []
+}

@@ -1,0 +1,20 @@
+{
+  "key": "business-light",
+  "name": "Business Light",
+  "version": "0.1.0",
+  "description": "Minimal registry shell for customers, invoices, shipping.",
+  "permissions": ["business.view"],
+  "menu": [
+    {
+      "title": "Business",
+      "url": "/m.php?m=business-light",
+      "group": "Business",
+      "icon": "briefcase"
+    }
+  ],
+  "submenu": [
+    {"title": "Customers", "url": "/m.php?m=business-light#customers"},
+    {"title": "Invoices", "url": "/m.php?m=business-light#invoices"},
+    {"title": "Shipping", "url": "/m.php?m=business-light#shipping"}
+  ]
+}
