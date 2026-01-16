@@ -10,7 +10,10 @@
       "name": "Compose Request",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [200, 300]
+      "position": [
+        200,
+        300
+      ]
     },
     {
       "parameters": {
@@ -27,7 +30,10 @@
       "name": "Prepare Draft",
       "type": "n8n-nodes-base.set",
       "typeVersion": 2,
-      "position": [500, 300]
+      "position": [
+        500,
+        300
+      ]
     },
     {
       "parameters": {
@@ -41,7 +47,10 @@
       "name": "Send Draft to ZCC",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [780, 300]
+      "position": [
+        780,
+        300
+      ]
     }
   ],
   "connections": {
@@ -69,5 +78,11 @@
     }
   },
   "active": false,
-  "settings": {}
+  "settings": {},
+  "id": "zd-mail-compose-v1",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "zcc-export"
+  },
+  "tags": []
 }

@@ -7,7 +7,10 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [240, 300]
+      "position": [
+        240,
+        300
+      ]
     },
     {
       "parameters": {
@@ -24,7 +27,10 @@
       "name": "Send Run Update",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [540, 300]
+      "position": [
+        540,
+        300
+      ]
     }
   ],
   "connections": {
@@ -41,5 +47,11 @@
     }
   },
   "active": false,
-  "settings": {}
+  "settings": {},
+  "id": "zd-core-run-logger-v1",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "zcc-export"
+  },
+  "tags": []
 }
