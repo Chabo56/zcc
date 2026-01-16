@@ -1,6 +1,45 @@
 {
   "name": "ZD - Core - Run Logger - v1",
-  "description": "Placeholder workflow for run logging.",
-  "nodes": [],
-  "connections": {}
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "logger-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ZCC_BASE_URL}}/automation/callback",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 30000
+        },
+        "headerParametersJson": "{\"X-ZCC-Token\": \"{{$env.ZCC_SHARED_SECRET}}\"}",
+        "bodyParametersJson": "={{$json}}"
+      },
+      "id": "logger-callback",
+      "name": "Send Run Update",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [540, 300]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send Run Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
 }

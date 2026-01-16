@@ -1,6 +1,52 @@
 {
   "name": "ZD - Shopware - Refresh - v1",
-  "description": "Placeholder workflow for shopware refresh cache.",
-  "nodes": [],
-  "connections": {}
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "shopware-cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ZCC_BASE_URL}}/shopware/ingest",
+        "jsonParameters": true,
+        "headerParametersJson": "{\"X-ZCC-Token\": \"{{$env.ZCC_SHARED_SECRET}}\"}",
+        "bodyParametersJson": "={{$json}}"
+      },
+      "id": "shopware-ingest",
+      "name": "Send Shopware Cache",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 300]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Send Shopware Cache",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
 }
