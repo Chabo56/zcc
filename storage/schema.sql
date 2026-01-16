@@ -1,0 +1,85 @@
+-- ZCC schema (MVP placeholder)
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  setting_key VARCHAR(100) NOT NULL UNIQUE,
+  setting_value TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  action VARCHAR(100) NOT NULL,
+  context JSON NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS modules (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  module_key VARCHAR(100) NOT NULL UNIQUE,
+  name VARCHAR(150) NOT NULL,
+  version VARCHAR(20) NOT NULL,
+  enabled TINYINT(1) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS automation_runs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  request_id VARCHAR(100) NOT NULL,
+  workflow_key VARCHAR(100) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  started_at DATETIME NULL,
+  finished_at DATETIME NULL,
+  execution_id VARCHAR(100) NULL,
+  error JSON NULL,
+  UNIQUE KEY automation_runs_request_id (request_id)
+);
+
+CREATE TABLE IF NOT EXISTS mail_index (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  uid VARCHAR(100) NOT NULL,
+  sender VARCHAR(255) NOT NULL,
+  subject VARCHAR(255) NOT NULL,
+  received_at DATETIME NULL
+);
+
+CREATE TABLE IF NOT EXISTS mail_drafts (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  draft_id VARCHAR(100) NOT NULL,
+  subject VARCHAR(255) NOT NULL,
+  body_text TEXT NULL,
+  body_html MEDIUMTEXT NULL,
+  updated_at DATETIME NULL,
+  UNIQUE KEY mail_drafts_draft_id (draft_id)
+);
+
+CREATE TABLE IF NOT EXISTS mail_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  request_id VARCHAR(100) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  payload JSON NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY mail_requests_request_id (request_id)
+);
+
+CREATE TABLE IF NOT EXISTS shopware_metrics (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  orders_today INT NOT NULL DEFAULT 0,
+  revenue_today DECIMAL(10,2) NOT NULL DEFAULT 0,
+  last_updated DATETIME NULL
+);
+
+CREATE TABLE IF NOT EXISTS shopware_orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_number VARCHAR(100) NOT NULL,
+  customer VARCHAR(255) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  status VARCHAR(50) NOT NULL,
+  ordered_at DATETIME NULL
+);
