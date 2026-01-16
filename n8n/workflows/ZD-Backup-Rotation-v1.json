@@ -1,0 +1,6 @@
+{
+  "name": "ZD - Backup - Rotation - v1",
+  "description": "Placeholder workflow for backup rotation and Nextcloud upload scheduling.",
+  "nodes": [],
+  "connections": {}
+}

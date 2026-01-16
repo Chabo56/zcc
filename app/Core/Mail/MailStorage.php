@@ -45,6 +45,27 @@ final class MailStorage
         return $this->readJson($this->basePath . '/index.json', []);
     }
 
+    public function saveIndex(array $items): void
+    {
+        if ($this->pdo) {
+            $this->pdo->beginTransaction();
+            $this->pdo->exec('DELETE FROM mail_index');
+            $stmt = $this->pdo->prepare('INSERT INTO mail_index (uid, sender, subject, received_at) VALUES (:uid, :sender, :subject, :received_at)');
+            foreach ($items as $item) {
+                $stmt->execute([
+                    'uid' => $item['uid'] ?? '',
+                    'sender' => $item['from'] ?? '',
+                    'subject' => $item['subject'] ?? '',
+                    'received_at' => $item['date'] ?? null,
+                ]);
+            }
+            $this->pdo->commit();
+            return;
+        }
+
+        $this->writeJson($this->basePath . '/index.json', $items);
+    }
+
     public function drafts(): array
     {
         if ($this->pdo) {

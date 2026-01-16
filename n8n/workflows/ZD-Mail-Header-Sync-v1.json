@@ -1,0 +1,6 @@
+{
+  "name": "ZD - Mail - Header Sync - v1",
+  "description": "Placeholder workflow for mail header sync and cache ingest.",
+  "nodes": [],
+  "connections": {}
+}

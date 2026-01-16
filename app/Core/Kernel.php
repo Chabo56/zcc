@@ -14,6 +14,7 @@ use Zcc\Core\Http\Router;
 use Zcc\Core\Permissions\PermissionGate;
 use Zcc\Core\Security\Csrf;
 use Zcc\Core\Settings\SettingsRepository;
+use Zcc\Core\Shopware\ShopwareStorage;
 use Zcc\Core\Theme\ThemeManager;
 use Zcc\Core\Views\View;
 
@@ -224,6 +225,14 @@ final class Kernel
             return handleAutomationCallback($request);
         });
 
+        $router->post('/mail/ingest', static function (Request $request): Response {
+            return handleMailIngest($request);
+        });
+
+        $router->post('/shopware/ingest', static function (Request $request): Response {
+            return handleShopwareIngest($request);
+        });
+
         return $router->dispatch($request);
     }
 }
@@ -278,6 +287,60 @@ function handleAutomationCallback(Request $request): Response
                 ]);
             }
         }
+    }
+
+    return new Response('OK', 200);
+}
+
+function handleMailIngest(Request $request): Response
+{
+    $connector = new DbConnector(BASE_PATH . '/storage/db.json');
+    $automation = new AutomationStorage(BASE_PATH . '/storage/automation', $connector);
+    $token = $request->server['HTTP_X_ZCC_TOKEN'] ?? '';
+    if ($token === '' || !hash_equals((string) ($automation->settings()['shared_secret'] ?? ''), $token)) {
+        return new Response('Unauthorized', 401);
+    }
+
+    $payload = json_decode(file_get_contents('php://input') ?: '', true);
+    if (!is_array($payload)) {
+        return new Response('Invalid payload', 400);
+    }
+
+    $storage = new MailStorage(BASE_PATH . '/storage/mail', $connector);
+    if (isset($payload['index']) && is_array($payload['index'])) {
+        $storage->saveIndex($payload['index']);
+    }
+    if (isset($payload['drafts']) && is_array($payload['drafts'])) {
+        foreach ($payload['drafts'] as $draft) {
+            if (is_array($draft)) {
+                $storage->saveDraft($draft);
+            }
+        }
+    }
+
+    return new Response('OK', 200);
+}
+
+function handleShopwareIngest(Request $request): Response
+{
+    $connector = new DbConnector(BASE_PATH . '/storage/db.json');
+    $automation = new AutomationStorage(BASE_PATH . '/storage/automation', $connector);
+    $token = $request->server['HTTP_X_ZCC_TOKEN'] ?? '';
+    if ($token === '' || !hash_equals((string) ($automation->settings()['shared_secret'] ?? ''), $token)) {
+        return new Response('Unauthorized', 401);
+    }
+
+    $payload = json_decode(file_get_contents('php://input') ?: '', true);
+    if (!is_array($payload)) {
+        return new Response('Invalid payload', 400);
+    }
+
+    $storage = new ShopwareStorage(BASE_PATH . '/storage/shopware', $connector);
+    if (isset($payload['metrics']) && is_array($payload['metrics'])) {
+        $storage->saveMetrics($payload['metrics']);
+    }
+    if (isset($payload['orders']) && is_array($payload['orders'])) {
+        $storage->saveOrders($payload['orders']);
     }
 
     return new Response('OK', 200);

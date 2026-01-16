@@ -44,15 +44,18 @@ Wenn vorhanden, nutzt der Core die DB für Settings/Runs/Mail/Shopware (Fallback
 ### Automation (Bundle 2 MVP)
 - Automation UI: `/m.php?m=automation-center`
 - Callback Endpoint: `POST /automation/callback` (Header: `X-ZCC-Token`)
+- Ingest Endpoints: `POST /mail/ingest`, `POST /shopware/ingest` (Header: `X-ZCC-Token`)
 
 ### Mail (Bundle 3 MVP)
 - Mail UI: `/m.php?m=mail-center`
 - Compose Request → n8n via `n8n_url` (Settings)
 - Draft Updates via `/automation/callback`
+- Header Cache Ingest via `POST /mail/ingest` (payload: `index`, optional `drafts`)
 
 ### Shopware (Bundle 4 MVP)
 - Shopware UI: `/m.php?m=shopware-center`
 - Refresh Trigger → n8n via `n8n_url` (Settings)
+- Cache Ingest via `POST /shopware/ingest` (payload: `metrics`, `orders`)
 
 ### Backups (Bundle 5 MVP)
 - Backup Manager: `/m.php?m=backup-manager`
@@ -107,6 +110,8 @@ Erzeugt ZIPs pro Modul unter `dist/modules/`.
 - `mail-compose`
 - `shopware-refresh`
 - `automation-registry`
+- `mail-header-sync`
+- `backup-rotation`
 
 ## n8n Workflow Library (Platzhalter)
 Die aktuellen Platzhalter-Exports liegen unter `n8n/workflows/` und tragen das Schema
