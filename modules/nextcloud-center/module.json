@@ -1,0 +1,20 @@
+{
+  "key": "nextcloud-center",
+  "name": "Nextcloud Extended",
+  "version": "0.1.0",
+  "description": "WebDAV browser shell for Nextcloud.",
+  "permissions": ["nextcloud.view"],
+  "menu": [
+    {
+      "title": "Nextcloud",
+      "url": "/m.php?m=nextcloud-center",
+      "group": "Nextcloud",
+      "icon": "cloud"
+    }
+  ],
+  "submenu": [
+    {"title": "Browser", "url": "/m.php?m=nextcloud-center#browser"},
+    {"title": "Uploads", "url": "/m.php?m=nextcloud-center#uploads"},
+    {"title": "Settings", "url": "/m.php?m=nextcloud-center#settings"}
+  ]
+}

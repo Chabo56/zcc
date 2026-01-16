@@ -1,0 +1,38 @@
+[
+  {
+    "key": "automation-center",
+    "name": "Automation Center",
+    "version": "0.1.0",
+    "enabled": true
+  },
+  {
+    "key": "mail-center",
+    "name": "Mail Center",
+    "version": "0.1.0",
+    "enabled": true
+  },
+  {
+    "key": "shopware-center",
+    "name": "Shopware Widget",
+    "version": "0.1.0",
+    "enabled": true
+  },
+  {
+    "key": "nextcloud-center",
+    "name": "Nextcloud Extended",
+    "version": "0.1.0",
+    "enabled": true
+  },
+  {
+    "key": "business-light",
+    "name": "Business Light",
+    "version": "0.1.0",
+    "enabled": true
+  },
+  {
+    "key": "backup-manager",
+    "name": "Backup Manager",
+    "version": "0.1.0",
+    "enabled": true
+  }
+]
