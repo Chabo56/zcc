@@ -1,0 +1,65 @@
+{
+  "name": "ZD - Backup - Rotation - v1",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyDay",
+              "hour": 2,
+              "minute": 0
+            }
+          ]
+        }
+      },
+      "id": "backup-cron",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ZCC_BASE_URL}}/m.php?m=backup-manager",
+        "jsonParameters": false,
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "backup-trigger",
+      "name": "Trigger Backup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        520,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Trigger Backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "zd-backup-rotation-v1",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "zcc-export"
+  },
+  "tags": []
+}

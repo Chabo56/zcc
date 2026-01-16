@@ -1,0 +1,60 @@
+{
+  "name": "ZD - Core - ZCC Callback - v1",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "zcc-callback",
+        "options": {}
+      },
+      "id": "callback-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.ZCC_BASE_URL}}/automation/callback",
+        "jsonParameters": true,
+        "options": {
+          "timeout": 30000
+        },
+        "headerParametersJson": "{\"X-ZCC-Token\": \"{{$env.ZCC_SHARED_SECRET}}\"}",
+        "bodyParametersJson": "={{$json}}"
+      },
+      "id": "callback-forward",
+      "name": "Forward to ZCC",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        540,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Forward to ZCC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "zd-core-zcc-callback-v1",
+  "versionId": "1",
+  "meta": {
+    "instanceId": "zcc-export"
+  },
+  "tags": []
+}
