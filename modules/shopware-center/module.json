@@ -1,0 +1,20 @@
+{
+  "key": "shopware-center",
+  "name": "Shopware Widget",
+  "version": "0.1.0",
+  "description": "Shopware 6 cache widget MVP.",
+  "permissions": ["shopware.view"],
+  "menu": [
+    {
+      "title": "Shopware",
+      "url": "/m.php?m=shopware-center",
+      "group": "Shopware",
+      "icon": "cart"
+    }
+  ],
+  "submenu": [
+    {"title": "Overview", "url": "/m.php?m=shopware-center#overview"},
+    {"title": "Orders", "url": "/m.php?m=shopware-center#orders"},
+    {"title": "Metrics", "url": "/m.php?m=shopware-center#metrics"}
+  ]
+}

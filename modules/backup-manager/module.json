@@ -1,0 +1,15 @@
+{
+  "key": "backup-manager",
+  "name": "Backup Manager",
+  "version": "0.1.0",
+  "description": "Backup Manager v2 (Nextcloud WebDAV).",
+  "permissions": ["backup.manage"],
+  "menu": [
+    {
+      "title": "Backups",
+      "url": "/m.php?m=backup-manager",
+      "group": "System",
+      "icon": "archive"
+    }
+  ]
+}
